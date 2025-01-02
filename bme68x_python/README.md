@@ -59,8 +59,8 @@ Connect the BME688 sensor to your Raspberry Pi's I2C bus as follows:
 ## Enable I2C on Raspberry Pi
   1. Run the Raspberry Pi configuration tool:
 
-    ```bash
-    sudo raspi-config```
+
+    sudo raspi-config
 
   2.Navigate to:
 
