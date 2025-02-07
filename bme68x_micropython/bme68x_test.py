@@ -1,5 +1,5 @@
 from machine import Pin, I2C
-from bme68x import BME68x
+from bme68x import BME688
 import time
 
 # Define I2C pins and initialize
