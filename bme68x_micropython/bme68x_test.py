@@ -1,22 +1,38 @@
-from machine import Pin, I2C
-from bme68x import BME688
 import time
+import machine
+from machine import Pin, I2C
+from bme68x import BME680_I2C
 
-# Define I2C pins and initialize
-i2c = I2C(0, scl=Pin(22), sda=Pin(21))  # Adjust pins as per your board
-bme688 = BME688(i2c)
+# Initialize I2C
+i2c = I2C(0, scl=Pin(4), sda=Pin(11))  # Adjust the pins according to your setup
 
-# Initialize the sensor
-bme688.init_sensor()
+# Initialize the BME680 sensor
+sensor = BME680_I2C(i2c)
 
-# Read and print data in a loop
+# Set sensor parameters (optional, can be adjusted based on your needs)
+sensor.temperature_oversample = 16  # 16x oversampling for temperature
+sensor.humidity_oversample = 16     # 16x oversampling for humidity
+sensor.pressure_oversample = 16     # 16x oversampling for pressure
+sensor.filter_size = 7             # IIR filter size
+
+# Main loop to read and display sensor values
 while True:
-    # Read data from the sensor
-    data = bme688.get_sensor_data()
+    try:
+        # Read temperature, humidity, pressure, and gas resistance
+        temp = sensor.temperature  # Temperature in °C
+        hum = sensor.humidity      # Humidity in %
+        pres = sensor.pressure     # Pressure in hPa
+        gas = sensor.gas           # Gas resistance in ohms
 
-    print("Temperature: {:.2f} °C".format(data["temperature"]))
-    print("Pressure: {:.2f} hPa".format(data["pressure"]))
-    print("Humidity: {:.2f} %".format(data["humidity"]))
-    print("Gas Resistance: {:.2f} Ohms".format(data["gas_resistance"]))
+        # Display the sensor data
+        print("Temperature: {:.2f} °C".format(temp))
+        print("Humidity: {:.2f} %".format(hum))
+        print("Pressure: {:.2f} hPa".format(pres))
+        print("Gas Resistance: {:d} Ohms".format(gas))
 
-    time.sleep(5)  # Read every 5 seconds
+    except Exception as e:
+        print("Error reading sensor:", e)
+
+    # Wait before the next reading
+    time.sleep(1)
+
